@@ -1,0 +1,950 @@
+package com.lc.setting.sence;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.lc.LCConfig;
+import com.lc.LCFragment;
+import com.lc.R;
+import com.lc.common.DataUtils;
+import com.lc.common.IItemPostionVisitor;
+import com.lc.data.ChangeDataUtils;
+import com.lc.data.DataConbine;
+import com.lc.data.DataConfig;
+import com.lc.data.GroupItem;
+import com.lc.data.SenceItem;
+import com.lc.dialog.DeleteDialog;
+import com.lc.dialog.DeleteDialog.IDeleteCallbackInterface;
+import com.lc.dialog.SenceSelectorDialog;
+import com.lc.dialog.SetTimeDialog;
+import com.lc.dialog.SetTimeDialog.TimerGetterInterface;
+import com.lc.group.bean.GroupBean;
+import com.lc.view.LCColorViewEx;
+import com.lc.view.LCColorViewEx.OnColorPickListen;
+import com.lc.view.LCGridView;
+import com.lc.view.LCGridView.DoubleClickCallBackInterface;
+import com.lc.view.LCGridView.TouchMoveCallBackInterface;
+import com.lc.view.LCGridView.TouchUpCallBackInterface;
+import com.lc.view.LCGroupView;
+import com.lc.view.LCPaneView;
+import com.lc.view.adapter.SencePannerAdapter;
+
+/**
+ * 场景编辑模块
+ * 
+ * @author LC work room
+ * 
+ */
+public class SenceSettingFragment extends LCFragment implements
+		TouchMoveCallBackInterface, TouchUpCallBackInterface,
+		IItemPostionVisitor {
+
+	private TextView tvName;
+	private TextView tvPlay;
+	private TextView tvStop;
+	private TextView tvList;
+	private LinearLayout llPane;
+	private RelativeLayout rlGroups;
+	private RelativeLayout rlColorPick;
+	private View rootView = null;
+	private Context mContext;
+	private LCPaneView mPaneView;
+	private LCGroupView mGroupView;
+//	private LCColorViewEx mColorViewEx;
+	private HorizontalScrollView mPannerScrollView;
+
+	private LCGridView mChildPane1;
+	private LCGridView mChildPane2;
+	private LCGridView mChildPane3;
+	private LCGridView mChildPane4;
+	private LCGridView mChildPane5;
+
+	private TextView tvPane1;
+	private TextView tvPane2;
+	private TextView tvPane3;
+	private TextView tvPane4;
+	private TextView tvPane5;
+
+	private SencePannerAdapter mChildPaneAdaper1;
+	private SencePannerAdapter mChildPaneAdaper2;
+	private SencePannerAdapter mChildPaneAdaper3;
+	private SencePannerAdapter mChildPaneAdaper4;
+	private SencePannerAdapter mChildPaneAdaper5;
+
+	private List<GroupItem> mChildPaneData1;
+	private List<GroupItem> mChildPaneData2;
+	private List<GroupItem> mChildPaneData3;
+	private List<GroupItem> mChildPaneData4;
+	private List<GroupItem> mChildPaneData5;
+
+	private int[] pannColor;
+
+	private ImageView ivPaneAdd1;
+	private ImageView ivPaneAdd2;
+	private ImageView ivPaneAdd3;
+	private ImageView ivPaneAdd4;
+
+	private int curPannerFocus = -1;
+
+	private SenceSelectorDialog selectorDialog;
+	private SetTimeDialog setTimeDialog;
+
+	private SenceItem curSenceItem;
+	/**
+	 * panner容器添加item后的界面更新问题，
+	 * 估计setSelection以及notifyDataSetChanged都是对gripview进行重画
+	 * ，为避免同步问题，setSelection在notifyDataSetChanged执行后一定时间才执行
+	 */
+	Handler mHandle;
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+	}
+
+	@SuppressLint("InflateParams")
+	@Override
+	protected View bindView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		mContext = getActivity();
+		if (rootView == null) {
+			rootView = inflater.inflate(
+					R.layout.v1_lc_setting_sence_fragment_layout, null);
+		}
+		tvName = (TextView) rootView
+				.findViewById(R.id.v1_lc_setting_sence_name);
+		tvPlay = (TextView) rootView
+				.findViewById(R.id.v1_lc_setting_sence_return);
+		tvStop = (TextView) rootView
+				.findViewById(R.id.v1_lc_setting_sence_stop);
+		tvList = (TextView) rootView
+				.findViewById(R.id.v1_lc_setting_sence_list);
+		llPane = (LinearLayout) rootView
+				.findViewById(R.id.v1_lc_setting_sence_pane);
+		mChildPane1 = (LCGridView) rootView
+				.findViewById(R.id.v1_lc_setting_sence_pane_1);
+		mChildPane2 = (LCGridView) rootView
+				.findViewById(R.id.v1_lc_setting_sence_pane_2);
+		mChildPane3 = (LCGridView) rootView
+				.findViewById(R.id.v1_lc_setting_sence_pane_3);
+		mChildPane4 = (LCGridView) rootView
+				.findViewById(R.id.v1_lc_setting_sence_pane_4);
+		mChildPane5 = (LCGridView) rootView
+				.findViewById(R.id.v1_lc_setting_sence_pane_5);
+
+		tvPane1 = (TextView) rootView
+				.findViewById(R.id.v1_lc_setting_sence_pane_text1);
+		tvPane2 = (TextView) rootView
+				.findViewById(R.id.v1_lc_setting_sence_pane_text2);
+		tvPane3 = (TextView) rootView
+				.findViewById(R.id.v1_lc_setting_sence_pane_text3);
+		tvPane4 = (TextView) rootView
+				.findViewById(R.id.v1_lc_setting_sence_pane_text4);
+		tvPane5 = (TextView) rootView
+				.findViewById(R.id.v1_lc_setting_sence_pane_text5);
+
+		ivPaneAdd1 = (ImageView) rootView
+				.findViewById(R.id.v1_lc_setting_sence_pane_image_1);
+		ivPaneAdd2 = (ImageView) rootView
+				.findViewById(R.id.v1_lc_setting_sence_pane_image_2);
+		ivPaneAdd3 = (ImageView) rootView
+				.findViewById(R.id.v1_lc_setting_sence_pane_image_3);
+		ivPaneAdd4 = (ImageView) rootView
+				.findViewById(R.id.v1_lc_setting_sence_pane_image_4);
+		rlGroups = (RelativeLayout) rootView
+				.findViewById(R.id.v1_lc_setting_sence_groups);
+		rlColorPick = (RelativeLayout) rootView
+				.findViewById(R.id.v1_lc_setting_sence_color_pick);
+		mPannerScrollView = (HorizontalScrollView) rootView
+				.findViewById(R.id.v1_setting_sence_panner_scroll);
+		mPaneView = new LCPaneView(mContext, -1);
+		mGroupView = new LCGroupView(mContext, true);
+
+//		mColorViewEx = new LCColorViewEx(mContext);
+
+		rlGroups.addView(mGroupView.getRootView());
+//		rlColorPick.addView(mColorViewEx.getRootView());
+
+		pannColor = new int[] { Color.parseColor("#ffffff"),
+				Color.parseColor("#ffffff"), Color.parseColor("#ffffff"),
+				Color.parseColor("#ffffff"), Color.parseColor("#ffffff") };
+		initData();
+		iniPane();
+		initEvent();
+
+		/** panner容器添加数据后自动滑动到最新数据位置 **/
+		mHandle = new Handler() {
+			@Override
+			public void handleMessage(Message msg) {
+				switch (msg.what) {
+				case 0:
+					mChildPane1.setSelection(mChildPaneData1.size());
+					break;
+				case 1:
+					mChildPane2.setSelection(mChildPaneData2.size());
+					break;
+				case 2:
+					mChildPane3.setSelection(mChildPaneData3.size());
+					break;
+				case 3:
+					mChildPane4.setSelection(mChildPaneData4.size());
+					break;
+				case 4:
+					mChildPane5.setSelection(mChildPaneData5.size());
+					break;
+
+				default:
+					break;
+				}
+				super.handleMessage(msg);
+			}
+		};
+		return rootView;
+	}
+
+	private void iniPane() {
+		mChildPaneData1 = new ArrayList<GroupItem>();
+		mChildPaneData2 = new ArrayList<GroupItem>();
+		mChildPaneData3 = new ArrayList<GroupItem>();
+		mChildPaneData4 = new ArrayList<GroupItem>();
+		mChildPaneData5 = new ArrayList<GroupItem>();
+		mChildPaneAdaper1 = new SencePannerAdapter(mContext, mChildPaneData1);
+		mChildPaneAdaper2 = new SencePannerAdapter(mContext, mChildPaneData2);
+		mChildPaneAdaper3 = new SencePannerAdapter(mContext, mChildPaneData3);
+		mChildPaneAdaper4 = new SencePannerAdapter(mContext, mChildPaneData4);
+		mChildPaneAdaper5 = new SencePannerAdapter(mContext, mChildPaneData5);
+
+		mChildPane1.setAdapter(mChildPaneAdaper1);
+		mChildPane2.setAdapter(mChildPaneAdaper2);
+		mChildPane3.setAdapter(mChildPaneAdaper3);
+		mChildPane4.setAdapter(mChildPaneAdaper4);
+		mChildPane5.setAdapter(mChildPaneAdaper5);
+
+		iniPaneData(curSenceItem);
+	}
+
+	/**
+	 * 根据给定的场景，初始化界面数据
+	 * 
+	 * @param senceItem
+	 */
+	private void iniPaneData(SenceItem senceItem) {
+		curSenceItem = senceItem;
+		if (curSenceItem != null) {
+			tvName.setText(curSenceItem.getItemName());
+			pannColor = curSenceItem.getPannColor();
+			curPannerFocus = 0;
+			mChildPaneData1 = curSenceItem.getChildPaneData1();
+			mChildPaneAdaper1.changeData(mChildPaneData1);
+			changePaneStrokeColor(pannColor[0]);
+
+			curPannerFocus = 1;
+			mChildPaneData2 = curSenceItem.getChildPaneData2();
+			mChildPaneAdaper2.changeData(mChildPaneData2);
+			changePaneStrokeColor(pannColor[1]);
+
+			curPannerFocus = 2;
+			mChildPaneData3 = curSenceItem.getChildPaneData3();
+			mChildPaneAdaper3.changeData(mChildPaneData3);
+			changePaneStrokeColor(pannColor[2]);
+
+			curPannerFocus = 3;
+			mChildPaneData4 = curSenceItem.getChildPaneData4();
+			mChildPaneAdaper4.changeData(mChildPaneData4);
+			changePaneStrokeColor(pannColor[3]);
+
+			curPannerFocus = 4;
+			mChildPaneData5 = curSenceItem.getChildPaneData5();
+			mChildPaneAdaper5.changeData(mChildPaneData5);
+			changePaneStrokeColor(pannColor[4]);
+
+			curPannerFocus = -1;
+		}
+	}
+
+	@SuppressLint("ClickableViewAccessibility")
+	private void initEvent() {
+		mGroupView.setCanMoveChild(true);
+		mGroupView.setMoveCallback(this);
+		mGroupView.setUpCallbck(this);
+//		mColorViewEx.setOnColorPickListen(new OnColorPickListen() {
+//
+//			@Override
+//			public void OnSeekBarUpdate(int progress) {
+//
+//			}
+//
+//			@Override
+//			public void OnColorPickTouchUp(int color) {
+//
+//			}
+//
+//			@Override
+//			public void OnColorPickTouchMove(int color) {
+//				changePaneStrokeColor(color);
+//			}
+//
+//			@Override
+//			public void OnColorCardClick(int position, int color) {
+//				changePaneStrokeColor(color);
+//			}
+//		});
+
+<<<<<<< .mine
+			@Override
+			public void OnSeekBarUpdate(int progress) {
+
+			}
+
+			@Override
+			public void OnColorPickTouchUp(int color) {
+
+			}
+
+			@Override
+			public void OnColorPickTouchMove(int color) {
+				changePaneStrokeColor(color);
+			}
+
+			@Override
+			public void OnColorCardClick(int position, int color) {
+				changePaneStrokeColor(color);
+			}
+		});
+
+=======
+>>>>>>> .r39
+		tvList.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				selectorDialog = new SenceSelectorDialog(mContext);
+				selectorDialog.setItemPostionVisitor(SenceSettingFragment.this);
+				selectorDialog.show();
+			}
+		});
+		ivPaneAdd1.setOnClickListener(mPannerAddClick);
+		ivPaneAdd2.setOnClickListener(mPannerAddClick);
+		ivPaneAdd3.setOnClickListener(mPannerAddClick);
+		ivPaneAdd4.setOnClickListener(mPannerAddClick);
+
+		mChildPane1.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				switch (event.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					if (curPannerFocus !=0) {
+						curPannerFocus =0;
+						setPannerToFoces(0);
+
+					} else {
+						curPannerFocus = -1;
+						setPannerToFoces(-1);
+
+					}
+					break;
+				default:
+					break;
+				}
+
+				return false;
+			}
+		});
+
+		mChildPane1.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				curPannerFocus =0;
+				setPannerToFoces(0);
+
+			}
+		});
+		mChildPane2.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				switch (event.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					if (curPannerFocus !=1) {
+						curPannerFocus = 1;
+						setPannerToFoces(1);
+					} else {
+						curPannerFocus = -1;
+						setPannerToFoces(-1);
+					}
+					break;
+				default:
+					break;
+				}
+
+				return false;
+			}
+		});
+
+		mChildPane2.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				curPannerFocus = 1;
+				setPannerToFoces(1);
+			}
+		});
+		mChildPane3.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				switch (event.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					if (curPannerFocus !=2) {
+						curPannerFocus = 2;
+						setPannerToFoces(2);
+					} else {
+						curPannerFocus = -1;
+						setPannerToFoces(-1);
+					}
+					break;
+				default:
+					break;
+				}
+
+				return false;
+			}
+		});
+
+		mChildPane3.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				curPannerFocus = 2;
+				setPannerToFoces(2);
+			}
+		});
+		mChildPane4.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				switch (event.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					if (curPannerFocus != 3) {
+						curPannerFocus = 3;
+						setPannerToFoces(3);
+					} else {
+						curPannerFocus = -1;
+						setPannerToFoces(-1);
+					}
+					break;
+				default:
+					break;
+				}
+
+				return false;
+			}
+		});
+
+		mChildPane4.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				curPannerFocus = 3;
+				setPannerToFoces(3);
+			}
+		});
+		mChildPane5.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				switch (event.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					if (curPannerFocus != 4) {
+						curPannerFocus = 4;
+						setPannerToFoces(4);
+					} else {
+						curPannerFocus = -1;
+						setPannerToFoces(-1);
+					}
+					break;
+				default:
+					break;
+				}
+
+				return false;
+			}
+		});
+
+		mChildPane5.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				curPannerFocus = 4;
+				setPannerToFoces(5);
+			}
+		});
+
+		mChildPane1.setDoubleClickCallBack(new DoubleClickCallBackInterface() {
+
+			@Override
+			public void doubleClickCallback(int x, int y, int position) {
+				showDeleteDialog(0, position);
+			}
+		});
+
+		mChildPane2.setDoubleClickCallBack(new DoubleClickCallBackInterface() {
+
+			@Override
+			public void doubleClickCallback(int x, int y, int position) {
+				showDeleteDialog(1, position);
+			}
+		});
+
+		mChildPane3.setDoubleClickCallBack(new DoubleClickCallBackInterface() {
+
+			@Override
+			public void doubleClickCallback(int x, int y, int position) {
+				showDeleteDialog(2, position);
+			}
+		});
+
+		mChildPane4.setDoubleClickCallBack(new DoubleClickCallBackInterface() {
+
+			@Override
+			public void doubleClickCallback(int x, int y, int position) {
+				showDeleteDialog(3, position);
+			}
+		});
+
+		mChildPane5.setDoubleClickCallBack(new DoubleClickCallBackInterface() {
+
+			@Override
+			public void doubleClickCallback(int x, int y, int position) {
+				showDeleteDialog(4, position);
+			}
+		});
+
+		tvPlay.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				if (mSendDataListen != null) {
+					DataConbine mConbine = new DataConbine(
+							DataConfig.SENCE_RUNNING);
+					mConbine.addByte(DataUtils.getByte(curSenceItem.getItemId()));
+					mSendDataListen.sendData(mConbine.getTotalData(),
+							curSenceItem);
+				}
+			}
+		});
+
+		tvStop.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				if (mSendDataListen != null) {
+					DataConbine mConbine = new DataConbine(
+							DataConfig.SENCE_STOPPING);
+					mConbine.addByte(DataUtils.getByte(curSenceItem.getItemId()));
+					mSendDataListen.sendData(mConbine.getTotalData(),
+							curSenceItem);
+				}
+			}
+		});
+
+	}
+
+	private void showDeleteDialog(final int pannerPos, final int itemPos) {
+		DeleteDialog deleteDialog = new DeleteDialog(mContext);
+		deleteDialog.setDeleteCallback(new IDeleteCallbackInterface() {
+
+			@Override
+			public void deleteCallback() {
+				deleteItem(pannerPos, itemPos);
+			}
+		});
+		deleteDialog.show();
+	}
+
+	@SuppressWarnings("deprecation")
+	private void deleteItem(int pannerPos, int itemPos) {
+		switch (pannerPos) {
+		case 0:
+			ChangeDataUtils.deleteSenceGroup(mContext, curSenceItem.getId(),
+					pannerPos, mChildPaneData1.get(itemPos).getId());
+			mChildPaneData1.remove(itemPos);
+			mChildPaneAdaper1.notifyDataSetChanged();
+			break;
+		case 1:
+			ChangeDataUtils.deleteSenceGroup(mContext, curSenceItem.getId(),
+					pannerPos, mChildPaneData2.get(itemPos).getId());
+			mChildPaneData2.remove(itemPos);
+			mChildPaneAdaper2.notifyDataSetChanged();
+			break;
+		case 2:
+			ChangeDataUtils.deleteSenceGroup(mContext, curSenceItem.getId(),
+					pannerPos, mChildPaneData3.get(itemPos).getId());
+			mChildPaneData3.remove(itemPos);
+			mChildPaneAdaper3.notifyDataSetChanged();
+			break;
+		case 3:
+			ChangeDataUtils.deleteSenceGroup(mContext, curSenceItem.getId(),
+					pannerPos, mChildPaneData4.get(itemPos).getId());
+			mChildPaneData4.remove(itemPos);
+			mChildPaneAdaper4.notifyDataSetChanged();
+			break;
+		case 4:
+			ChangeDataUtils.deleteSenceGroup(mContext, curSenceItem.getId(),
+					pannerPos, mChildPaneData5.get(itemPos).getId());
+			mChildPaneData5.remove(itemPos);
+			mChildPaneAdaper5.notifyDataSetChanged();
+			break;
+		default:
+			break;
+		}
+	}
+
+	private void initData() {
+		List<GroupBean> list = LCConfig.getGroups();
+		List<GroupItem> mGroupItems = DataUtils.coverGroupBeansToGroupItems(
+				mContext, list);
+		mGroupView.changeData(mGroupItems);
+
+		selectorDialog = new SenceSelectorDialog(mContext);
+		curSenceItem = selectorDialog.getSenceItems().get(0);
+	}
+
+	/**
+	 * 改变pane的stroke颜色值
+	 * 
+	 * @param color
+	 */
+	private void changePaneStrokeColor(int color) {
+		switch (curPannerFocus) {
+		case 0:
+			setFocusPaneToColor(mChildPane1, color,0, mChildPaneData1);
+
+			break;
+		case 1:
+			setFocusPaneToColor(mChildPane2, color,1, mChildPaneData2);
+			break;
+		case 2:
+			setFocusPaneToColor(mChildPane3, color,2, mChildPaneData3);
+			break;
+		case 3:
+			setFocusPaneToColor(mChildPane4, color,3, mChildPaneData4);
+			break;
+		case 4:
+			setFocusPaneToColor(mChildPane5, color,4, mChildPaneData5);
+			break;
+
+		default:
+			break;
+		}
+	}
+
+	private OnClickListener mPannerAddClick = new OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			switch (v.getId()) {
+			case R.id.v1_lc_setting_sence_pane_image_1:
+				showSetTimeDialog();
+				break;
+			case R.id.v1_lc_setting_sence_pane_image_2:
+				showSetTimeDialog();
+				break;
+			case R.id.v1_lc_setting_sence_pane_image_3:
+				showSetTimeDialog();
+				break;
+			case R.id.v1_lc_setting_sence_pane_image_4:
+				showSetTimeDialog();
+				break;
+			default:
+				break;
+			}
+		}
+	};
+
+	/**
+	 * 添加组的item进指定容器
+	 * 
+	 * @param item
+	 * @param adapter
+	 * @param pannerNum
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private void addGroupItemToPanner(GroupItem item, List data,
+			SencePannerAdapter adapter, int pannerNum) {
+		if (pannerNum>= 0 && pannerNum< pannColor.length) {
+			item.setItemColor(pannColor[pannerNum]);
+			mGroupView.changeColor(pannColor[pannerNum], item);
+		}
+		data.add(item);
+		adapter.notifyDataSetChanged();
+
+		mHandle.sendEmptyMessageDelayed(pannerNum, 30);
+		setPannerToFoces(pannerNum);
+
+		/**
+		 * 发送数据
+		 */
+		if (mSendDataListen != null) {
+			DataConbine mConbine = new DataConbine(
+					DataConfig.SENCE_PANE_ADD_GROUP);
+			mConbine.addByte(DataUtils.getByte(curSenceItem.getItemId()));
+			mConbine.addByte(DataUtils.getByte(pannerNum));
+			mConbine.addByte(DataUtils.getByte(item.getItemId()));
+			mSendDataListen.sendData(mConbine.getTotalData(), item);
+		}
+	}
+
+	private void showSetTimeDialog() {
+		if (setTimeDialog == null) {
+			setTimeDialog = new SetTimeDialog(mContext);
+			setTimeDialog.setTimerGetter(new TimerGetterInterface() {
+
+				@Override
+				public void onGetTime(int time) {
+					sendSenceTime(time);
+				}
+			});
+		}
+		setTimeDialog.showDialog();
+	}
+
+	@Override
+	public void upCallback(int x, int y, int position) {
+		switch (curPannerFocus) {
+		case 0:
+			if (DataUtils.isContains(x, y, mChildPane1)) {
+				GroupItem mGroupItem1 = mGroupView.getData().get(position);
+				if (mGroupItem1.isSelect()) {
+					return;
+				} else {
+					mGroupItem1.setSelect(true);
+					addGroupItemToPanner(mGroupItem1, mChildPaneData1,
+							mChildPaneAdaper1, 0);
+					DataUtils.addGroupToSence(mContext, curSenceItem.getId(),
+							0, mGroupItem1);
+				}
+			}
+			break;
+		case 1:
+			if (DataUtils.isContains(x, y, mChildPane2)) {
+				GroupItem mGroupItem2 = mGroupView.getData().get(position);
+				if (mGroupItem2.isSelect()) {
+					return;
+				} else {
+					mGroupItem2.setSelect(true);
+					addGroupItemToPanner(mGroupItem2, mChildPaneData2,
+							mChildPaneAdaper2, 1);
+				}
+			}
+			break;
+		case 2:
+			if (DataUtils.isContains(x, y, mChildPane3)) {
+				GroupItem mGroupItem3 = mGroupView.getData().get(position);
+				if (mGroupItem3.isSelect()) {
+					return;
+				} else {
+					mGroupItem3.setSelect(true);
+					addGroupItemToPanner(mGroupItem3, mChildPaneData3,
+							mChildPaneAdaper3,2);
+				}
+			}
+			break;
+		case 3:
+			if (DataUtils.isContains(x, y, mChildPane4)) {
+				GroupItem mGroupItem4 = mGroupView.getData().get(position);
+				if (mGroupItem4.isSelect()) {
+					return;
+				} else {
+					mGroupItem4.setSelect(true);
+					addGroupItemToPanner(mGroupItem4, mChildPaneData4,
+							mChildPaneAdaper4, 3);
+				}
+			}
+			break;
+		case 4:
+			if (DataUtils.isContains(x, y, mChildPane5)) {
+				GroupItem mGroupItem5 = mGroupView.getData().get(position);
+				if (mGroupItem5.isSelect()) {
+					return;
+				} else {
+					mGroupItem5.setSelect(true);
+					addGroupItemToPanner(mGroupItem5, mChildPaneData5,
+							mChildPaneAdaper5, 4);
+				}
+			}
+			break;
+		default:
+			break;
+		}
+		// if (curGroupItem != null) {
+		//
+		// }
+		// curGroupItem = null;
+	}
+
+	@Override
+	public void moveCallback(int x, int y, int position) {
+		if (DataUtils.isContains(x, y, mChildPane1)) {
+			setPannerToFoces(0);
+			curPannerFocus = 0;
+		} else if (DataUtils.isContains(x, y, mChildPane2)) {
+			setPannerToFoces(1);
+			curPannerFocus = 1;
+		} else if (DataUtils.isContains(x, y, mChildPane3)) {
+			setPannerToFoces(2);
+			curPannerFocus = 2;
+		} else if (DataUtils.isContains(x, y, mChildPane4)) {
+			setPannerToFoces(3);
+			curPannerFocus = 3;
+		} else if (DataUtils.isContains(x, y, mChildPane5)) {
+			setPannerToFoces(4);
+			curPannerFocus = 4;
+		}
+
+	}
+
+	@Override
+	public void visiteItemPos(int pos) {
+		if (selectorDialog != null) {
+			SenceItem item = selectorDialog.getSenceItems().get(pos);
+			if (item != null) {
+				tvName.setText(item.getName());
+				iniPaneData(item);
+				selectorDialog.dismiss();
+			}
+		}
+	}
+
+	/**
+	 * 使panner显示foces样式
+	 * 
+	 * @param position
+	 */
+	private void setPannerToFoces(int position) {
+		initPaneTextColor();
+		switch (position) {
+		case 0:
+			tvPane1.setTextColor(getResources().getColor(R.color.yellow));
+			mGroupView.showTargetToFocus(mChildPaneData1, true);
+			break;
+		case 1:
+			tvPane2.setTextColor(getResources().getColor(R.color.yellow));
+			mGroupView.showTargetToFocus(mChildPaneData2, true);
+			break;
+		case 2:
+			tvPane3.setTextColor(getResources().getColor(R.color.yellow));
+			mGroupView.showTargetToFocus(mChildPaneData3, true);
+			break;
+		case 3:
+			tvPane4.setTextColor(getResources().getColor(R.color.yellow));
+			mGroupView.showTargetToFocus(mChildPaneData4, true);
+			break;
+		case 4:
+			tvPane5.setTextColor(getResources().getColor(R.color.yellow));
+			mGroupView.showTargetToFocus(mChildPaneData5, true);
+			break;
+		default:
+			break;
+		}
+	}
+
+	@SuppressWarnings("deprecation")
+	private void setFocusPaneToColor(LCGridView lcLayout, int color,
+			int position, List<GroupItem> data) {
+		GradientDrawable mGradientDrawable = new GradientDrawable();
+		// GradientDrawable mGradientDrawable = (GradientDrawable) lcLayout
+		// .getBackground();
+		mGradientDrawable.setCornerRadius(5);
+		mGradientDrawable.setStroke(3, color);
+		lcLayout.setBackgroundDrawable(mGradientDrawable);
+		if (position>= 0 && position < pannColor.length) {
+			pannColor[position] = color;
+		}
+		for (GroupItem item : data) {
+			item.setItemColor(pannColor[position]);
+			mGroupView.changeColor(color, item);
+		}
+
+		/**
+		 * 发送panner数据
+		 */
+		if (mSendDataListen != null) {
+			DataConbine mConbine = new DataConbine(
+					DataConfig.SENCE_PANE_COLOR_CHANGE);
+			mConbine.addByte(DataUtils.getByte(curSenceItem.getItemId()));
+			mConbine.addByte(DataUtils.getByte(position));
+			int red = Color.red(color);
+			mConbine.addByte(DataUtils.getByte(red));
+			int green = Color.green(color);
+			mConbine.addByte(DataUtils.getByte(green));
+			int blue = Color.blue(color);
+			mConbine.addByte(DataUtils.getByte(blue));
+			mSendDataListen.sendData(mConbine.getTotalData(), curSenceItem);
+		}
+
+	}
+
+	/** 初始化所有panner处于非focus样式 **/
+	private void initPaneTextColor() {
+		tvPane1.setTextColor(getResources().getColor(R.color.white));
+		tvPane2.setTextColor(getResources().getColor(R.color.white));
+		tvPane3.setTextColor(getResources().getColor(R.color.white));
+		tvPane4.setTextColor(getResources().getColor(R.color.white));
+		tvPane5.setTextColor(getResources().getColor(R.color.white));
+	}
+
+	/**
+	 * 发送时间设置命令
+	 * 
+	 * @param time
+	 */
+	private void sendSenceTime(int time) {
+		if (mSendDataListen != null) {
+			DataConbine mConbine = new DataConbine(
+					DataConfig.SENCE_TIME_SETTING);
+			mConbine.addByte(DataUtils.getByte(curSenceItem.getItemId()));
+			mConbine.addByte(DataUtils.getByte(time));
+			mSendDataListen.sendData(mConbine.getTotalData(), curSenceItem);
+		}
+	}
+
+}

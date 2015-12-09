@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/v1_lc_setting_favor_lightname"
+            android:layout_width="150dp"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:background="@drawable/v1_base_btn_black__selector"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="灯具"
+            android:textColor="@color/white"
+            android:textSize="@dimen/v1_item_text_size" />
+
+        <TextView
+            android:id="@+id/v1_lc_setting_favor_groupname"
+            android:layout_width="150dp"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:background="@drawable/v1_base_btn_black__selector"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="编组"
+            android:textColor="@color/white"
+            android:textSize="@dimen/v1_item_text_size" />
+
+        <TextView
+            android:id="@+id/v1_lc_setting_favor_sencename"
+            android:layout_width="150dp"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:background="@drawable/v1_base_btn_black__selector"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="场景"
+            android:textColor="@color/white"
+            android:textSize="@dimen/v1_item_text_size" />
+
+        <TextView
+            android:id="@+id/v1_lc_setting_favor_showname"
+            android:layout_width="150dp"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:background="@drawable/v1_base_btn_black__selector"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="show"
+            android:textColor="@color/white"
+            android:textSize="@dimen/v1_item_text_size" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/v1_lc_setting_favor_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:background="@drawable/v1_base_btn_white__unpress" />
+
+</LinearLayout>

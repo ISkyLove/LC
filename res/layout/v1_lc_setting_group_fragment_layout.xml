@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+    <LinearLayout
+        android:id="@+id/v1_setting_group_light"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_margin="10dp"
+        android:layout_weight="3"
+        android:background="@drawable/v1_base_btn_white__unpress"
+        android:orientation="vertical" />
+
+    <LinearLayout
+        android:id="@+id/v1_setting_group_group"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_margin="10dp"
+        android:layout_weight="2"
+        android:background="@drawable/v1_base_btn_white__unpress"
+        android:orientation="vertical" />
+
+</LinearLayout>

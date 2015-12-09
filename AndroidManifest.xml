@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.lc"
+    android:versionCode="1"
+    android:versionName="1.5" >
+
+    <uses-sdk
+        android:minSdkVersion="9"
+        android:targetSdkVersion="19" />
+
+    <uses-permission android:name="android.permission.READ_LOGS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <application
+        android:name="com.lc.LCApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/icon"
+        android:label="e-life"
+        android:theme="@style/LCTheme" >
+
+        <!--
+        <activity
+            android:name="com.lc.LCMainActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:label="@string/app_name"
+            android:screenOrientation="landscape" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        -->
+
+        <activity
+            android:name="com.lc.MainActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:label="e-life"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <service android:name="com.lc.service.LCSocketService" >
+            <intent-filter>
+                <action android:name="com.lc.service.LCSocketService.action" />
+            </intent-filter>
+        </service>
+        <service android:name="com.lc.service.LCNIOSocketService" >
+            <intent-filter>
+                <action android:name="com.lc.service.LCNIOSocketService.action" />
+            </intent-filter>
+        </service>
+
+        <receiver android:name="com.lc.Broadcast.LCSocketBroadcast" >
+            <intent-filter>
+                <action android:name="com.lc.Broadcast.LCSocketBroadcast.action" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>

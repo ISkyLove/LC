@@ -1,0 +1,258 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/v1_layout_cus_bk_dr_green"
+    android:orientation="vertical"
+    tools:context="com.lc.MainActivity$PlaceholderFragment" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp" >
+
+        <View
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/icon" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="e-life"
+            android:textColor="@color/v1_layout_cus_bk"
+            android:textSize="20dp" />
+
+        <Button
+            android:id="@+id/main_contro_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/v1_base_btn_black__selector"
+            android:text="WIFI"
+            android:textColor="@color/v1_layout_cus_bk"
+            android:textSize="15dp" />
+
+        <Button
+            android:id="@+id/main_hand_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/v1_base_btn_black__selector"
+            android:text="手动连接"
+            android:textColor="@color/v1_layout_cus_bk"
+            android:textSize="15dp" />
+
+        <Button
+            android:id="@+id/main_btn_log"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/ic_action_about"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@drawable/v1_layout_cus_bk_dr" />
+
+    <LinearLayout
+        android:id="@+id/main_contro"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/hello_world"
+            android:visibility="gone" />
+
+        <EditText
+            android:id="@+id/main_send_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="请输入发送数据"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/main_send_btn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/v1_base_btn_black__selector"
+                android:text="开关"
+                android:textColor="@color/v1_layout_cus_bk"
+                android:textSize="15dp" />
+
+            <Button
+                android:id="@+id/main_btn_1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/v1_base_btn_black__selector"
+                android:text="夜光"
+                android:textColor="@color/v1_layout_cus_bk"
+                android:textSize="15dp" />
+
+            <Button
+                android:id="@+id/main_btn_2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/v1_base_btn_black__selector"
+                android:text="正常光"
+                android:textColor="@color/v1_layout_cus_bk"
+                android:textSize="15dp" />
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/main_btn_3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/v1_base_btn_black__selector"
+                android:text="btn3"
+                android:textColor="@color/v1_layout_cus_bk"
+                android:textSize="15dp" />
+
+            <Button
+                android:id="@+id/main_btn_4"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/v1_base_btn_black__selector"
+                android:text="btn4"
+                android:textColor="@color/v1_layout_cus_bk"
+                android:textSize="15dp" />
+
+            <Button
+                android:id="@+id/main_btn_5"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/v1_base_btn_black__selector"
+                android:text="btn5"
+                android:textColor="@color/v1_layout_cus_bk"
+                android:textSize="15dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:gravity="center_vertical"
+                android:text="色温"
+                android:textColor="@color/white" />
+
+            <SeekBar
+                android:id="@+id/main_seekbar_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:max="255"
+                android:maxHeight="5dp"
+                android:minHeight="5dp"
+                android:paddingLeft="15dp"
+                android:progressDrawable="@drawable/v1_seek_bar_light_bk" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:gravity="center_vertical"
+                android:text="亮度"
+                android:textColor="@color/white" />
+
+            <SeekBar
+                android:id="@+id/main_seekbar_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:max="255"
+                android:maxHeight="5dp"
+                android:minHeight="5dp"
+                android:paddingLeft="15dp"
+                android:progressDrawable="@drawable/v1_seek_bar_light_bk" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <com.lc.view.ColorView
+                android:id="@+id/color_pick"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/main_receive"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scrollbars="vertical"
+                android:textColor="#00ff00"
+                android:visibility="gone" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

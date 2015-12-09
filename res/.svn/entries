@@ -1,0 +1,64 @@
+10
+
+dir
+107
+svn://localhost/LC/res
+svn://localhost
+
+
+
+2015-03-28T08:16:05.872798Z
+106
+LZH
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+96357cef-aebc-b64a-bdd5-bcc697a6d8a6
+
+values
+dir
+
+drawable
+dir
+
+values-w820dp
+dir
+
+drawable-hdpi
+dir
+
+drawable-xxhdpi
+dir
+
+menu
+dir
+
+values-v11
+dir
+
+drawable-ldpi
+dir
+
+values-v14
+dir
+
+drawable-mdpi
+dir
+
+drawable-xhdpi
+dir
+
+layout
+dir
+

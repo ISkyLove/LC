@@ -1,0 +1,533 @@
+package com.lc.socket;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+
+import com.lc.common.DataUtils;
+import com.lc.common.LogUtils;
+import com.lc.data.DataConbine;
+import com.lc.data.DataConfig;
+
+import android.content.Context;
+import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.os.Process;
+import android.util.Log;
+
+/**
+ * socket通讯类
+ * 
+ * @author Lin
+ * 
+ */
+public class SocketThread extends Thread {
+
+	int mPriority;
+	int mTid = -1;
+	Looper mLooper;
+
+	private Context mContext;
+
+	private static String TAG = SocketThread.class.getSimpleName();
+
+	public static int SOCKET_PORT = 55555;
+
+	public static int CONNECT_TIME_OUT = 1000 * 0;
+
+	public static int RECEIVE_TIME_OUT = 1000 * 60 * 60;
+
+	public static int RECEIVE_SIZE = 128;
+
+	public static final int SOCKET_BEGIN_CONNECT = 1;
+
+	public static final int SOCKET_CONNECT = 2;
+
+	public static final int SOCKET_CONNECTED = 3;
+
+	public static final int SOCKET_SEND = 4;
+
+	public static final int SOCKET_SEND_SUCCESS = 5;
+
+	public static final int SOCKET_RECEIVE = 6;
+
+	public static final int SOCKET_DESTORY = 7;
+
+	public static final int SOCKET_FIND_ID_BEGIN = 8;
+
+	public static final int SOCKET_FIND_ID_FAILED = 9;
+
+	public static final int SOCKET_FIND_ID_SUCCESS = 10;
+
+	private ReceiveDataListen mReceiveDataListen;
+
+	private OnSendDataSuccessListen mSendDataSuccessListen;
+
+	private ConnectListen mConnectListen;
+
+	private static SocketThread mThread = null;
+
+	private Handler mHandler;
+
+	private Socket mSocket = null;
+
+	private InetSocketAddress mSocketRemoteAddr;
+
+	private InetSocketAddress mSocketLocalAddr;
+
+	private OutputStream mOutputStream = null;
+
+	private InputStream mInputStream = null;
+
+	private SocketReceiveThread mReceiveThread = null;
+	/**
+	 * 由于服务端需要每隔一段时间接受数据维持连接，所以维持每隔一段时间发一个数据给服务端，
+	 */
+	public static final int SOCKET_KEEP_LINE = 100;
+
+	public static final long SOCKET_KEEP_TIME = 1000 * 60 * 3;
+
+	public static boolean SOCKET_RECEIVE_SWITCH = true;
+
+	private SocketThread(Context context) {
+		this.mContext = context;
+		mPriority = Process.THREAD_PRIORITY_DEFAULT;
+		mHandler = new Handler() {
+			@Override
+			public void handleMessage(Message msg) {
+				// TODO Auto-generated method stub
+				switch (msg.what) {
+				case SOCKET_CONNECT:
+					initSocket();
+					break;
+				case SOCKET_CONNECTED:
+					InitConnected();
+					break;
+				case SOCKET_SEND:
+					byte[] msenddata = (byte[]) msg.obj;
+					if (sendData(msenddata)) {
+						if (mSendDataSuccessListen != null) {
+							mSendDataSuccessListen.OnSendDataSuccess(msenddata);
+						}
+					}
+					break;
+				case SOCKET_RECEIVE:
+					byte[] mreceivedata = (byte[]) msg.obj;
+					receiveData(mreceivedata);
+					break;
+				case SOCKET_DESTORY:
+					destoryThread();
+					break;
+				case SOCKET_KEEP_LINE:
+					DataConbine mDataConbine = new DataConbine(
+							DataConfig.DATA_OFFSETS);
+					sendData(mDataConbine.getTotalData());
+					mHandler.sendEmptyMessageDelayed(SOCKET_KEEP_LINE,
+							SOCKET_KEEP_TIME);
+					break;
+				default:
+					break;
+				}
+			}
+		};
+		try {
+			String localIP = SocketHelper.getLocalIP(mContext);
+			mSocketLocalAddr = new InetSocketAddress(localIP,
+					SocketHelper.getTargetPort(mContext));
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			Log.i(TAG, "get local host IP faile:" + e1.getMessage());
+		}
+
+	}
+
+	private void destroySocket() {
+
+		if (mSocket != null) {
+			try {
+				SOCKET_RECEIVE_SWITCH = false;
+				if (!mSocket.isClosed() && !mSocket.isOutputShutdown()
+						&& mSocket.isConnected()) {
+					mSocket.shutdownOutput();
+				}
+
+				if (!mSocket.isClosed() && !mSocket.isInputShutdown()
+						&& mSocket.isConnected()) {
+					mSocket.shutdownInput();
+				}
+
+				if (!mSocket.isClosed()) {
+					mSocket.close();
+				}
+				if (mReceiveThread != null) {
+					if (mReceiveThread.isAlive()
+							&& !mReceiveThread.isInterrupted()) {
+						mReceiveThread.interrupt();
+						Thread.sleep(1000);
+					}
+					mReceiveThread = null;
+				}
+				mOutputStream = null;
+				mInputStream = null;
+				mSocket = null;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+	}
+
+	private void receiveData(byte[] data) {
+		if (data == null || data.length < 1) {
+			return;
+		}
+		if (mReceiveDataListen != null) {
+			mReceiveDataListen.OnReceiveData(data);
+		}
+	}
+
+	private boolean sendData(byte[] data) {
+		mHandler.removeMessages(SOCKET_KEEP_LINE);
+		if (data == null || data.length < 1) {
+			return false;
+		}
+		if (mSocket != null && mSocket.isConnected() && !mSocket.isClosed()) {
+			try {
+				LogUtils.i(TAG,
+						"ready to send data:" + DataUtils.byte2HexStr(data));
+				mOutputStream.write(data, 0, data.length);
+
+				mHandler.removeMessages(SOCKET_KEEP_LINE);
+				mHandler.sendEmptyMessageDelayed(SOCKET_KEEP_LINE,
+						SOCKET_KEEP_TIME);
+				return true;
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				if (mConnectListen != null) {
+					mConnectListen.OnConnectFaile(mSocket, e.getMessage());
+				}
+				e.printStackTrace();
+				Log.i(TAG, "write data to socket failed:" + e.getMessage());
+				return false;
+			} finally {
+
+			}
+
+		} else {
+			Log.i(TAG, "write data to socket failed:connext failed");
+			destoryThread();
+			if (mConnectListen != null) {
+				mConnectListen.OnConnectFaile(mSocket,
+						"socket is  not connected or close");
+			}
+			return false;
+		}
+	}
+
+	private void initSocket() {
+		try {
+			destroySocket();
+
+			mSocket = new Socket();
+			// mSocket.setReceiveBufferSize(16);
+			mSocket.setTcpNoDelay(true);
+			mSocket.setSoTimeout(RECEIVE_TIME_OUT);
+			mSocket.setSoLinger(true, 1);
+			// mSocket.setReuseAddress(true);
+			if (mSocketLocalAddr != null) {
+				// mSocket.bind(mSocketLocalAddr);
+				Log.i(TAG, "local IP:"
+						+ mSocketLocalAddr.getAddress().toString());
+			}
+			if (mSocketRemoteAddr != null) {
+				if (mConnectListen != null) {
+					mConnectListen.OnContectBegined(mSocket,
+							mSocketRemoteAddr.toString());
+				}
+				new Thread(new Runnable() {
+
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						try {
+							mSocket.connect(mSocketRemoteAddr, CONNECT_TIME_OUT);
+							if (mSocket.isConnected()) {
+								Message msg = mHandler.obtainMessage();
+								msg.what = SOCKET_CONNECTED;
+								msg.sendToTarget();
+							}
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							Log.i(TAG,
+									"socket connect failed:" + e.getMessage());
+							Message msg = mHandler.obtainMessage();
+							msg.what = SocketThread.SOCKET_DESTORY;
+							msg.sendToTarget();
+							if (mConnectListen != null) {
+								mConnectListen.OnConnectFaile(mSocket,
+										e.getMessage());
+							}
+						}
+					}
+				}).start();
+
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			Log.i(TAG, "init socket failed:" + e.getMessage());
+			Message msg = mHandler.obtainMessage();
+			msg.what = SocketThread.SOCKET_DESTORY;
+			msg.sendToTarget();
+			if (mConnectListen != null) {
+				mConnectListen.OnConnectFaile(mSocket, e.getMessage());
+			}
+		}
+	}
+
+	private void InitConnected() {
+		try {
+
+			if (mSocket.isConnected()) {
+				mHandler.removeMessages(SOCKET_KEEP_LINE);
+				mHandler.sendEmptyMessageDelayed(SOCKET_KEEP_LINE,
+						SOCKET_KEEP_TIME);
+				mOutputStream = mSocket.getOutputStream();
+				mInputStream = mSocket.getInputStream();
+
+				SOCKET_RECEIVE_SWITCH = true;
+				mReceiveThread = new SocketReceiveThread(mInputStream,
+						mHandler, mSocket);
+				mReceiveThread.start();
+				if (mConnectListen != null) {
+					mConnectListen.OnConnectSuccess(mSocket,
+							mSocketRemoteAddr.toString());
+				}
+			} else {
+				if (mConnectListen != null) {
+					mConnectListen.OnConnectFaile(mSocket,
+							mSocketRemoteAddr.toString());
+				}
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			Log.i(TAG, "init socket failed:" + e.getMessage());
+			Message msg = mHandler.obtainMessage();
+			msg.what = SocketThread.SOCKET_DESTORY;
+			msg.sendToTarget();
+			if (mConnectListen != null) {
+				mConnectListen.OnConnectFaile(mSocket, e.getMessage());
+			}
+		}
+	}
+
+	public void InitRemoteAddr(String IP) {
+		mSocketRemoteAddr = new InetSocketAddress(IP, SOCKET_PORT);
+	}
+
+	public void InitRemoteAddr(String IP, int port) {
+		if (port > 1024) {
+			SOCKET_PORT = port;
+		}
+		mSocketRemoteAddr = new InetSocketAddress(IP, SOCKET_PORT);
+	}
+
+	public static SocketThread getInstance(Context context) {
+		if (mThread == null) {
+			mThread = new SocketThread(context);
+			mThread.start();
+		}
+		return mThread;
+	}
+
+	public interface ReceiveDataListen {
+		void OnReceiveData(byte[] data);
+	}
+
+	public interface OnSendDataSuccessListen {
+		void OnSendDataSuccess(byte[] data);
+	}
+
+	public interface ConnectListen {
+		void OnContectBegined(Socket socket, String message);
+
+		void OnConnectSuccess(Socket socket, String message);
+
+		void OnConnectFaile(Socket socket, String message);
+
+	}
+
+	public void setOnReceiveDataListen(ReceiveDataListen receiveDataListen) {
+		mReceiveDataListen = receiveDataListen;
+	}
+
+	public void setOnSendDataSuccessListen(
+			OnSendDataSuccessListen onSendDataSuccessListen) {
+		mSendDataSuccessListen = onSendDataSuccessListen;
+	}
+
+	public void setOnConnectListen(ConnectListen connectListen) {
+		this.mConnectListen = connectListen;
+	}
+
+	public Handler getHandler() {
+		return mHandler;
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		mTid = Process.myTid();
+		Looper.prepare();
+		synchronized (this) {
+			mLooper = Looper.myLooper();
+			notifyAll();
+		}
+		Process.setThreadPriority(mPriority);
+		Looper.loop();
+		mTid = -1;
+	}
+
+	public void destoryThread() {
+		destroySocket();
+		mHandler.removeMessages(SOCKET_KEEP_LINE);
+		mHandler.removeMessages(SOCKET_SEND);
+		mHandler.removeMessages(SOCKET_RECEIVE);
+		mHandler.removeMessages(SOCKET_BEGIN_CONNECT);
+		mHandler.removeMessages(SOCKET_CONNECT);
+		mHandler.removeMessages(SOCKET_CONNECTED);
+		Message msg = mHandler.obtainMessage();
+		msg.setTarget(null);
+
+		if (quitSafely()) {
+			Log.i(TAG, "quitSafely false");
+		}
+		if (mThread != null && mThread.isAlive() && !mThread.isInterrupted()) {
+			mThread.interrupt();
+		}
+		mThread = null;
+	}
+
+	private Looper getLooper() {
+		if (!isAlive()) {
+			return null;
+		}
+
+		// If the thread has been started, wait until the looper has been
+		// created.
+		synchronized (this) {
+			while (isAlive() && mLooper == null) {
+				try {
+					wait();
+				} catch (InterruptedException e) {
+				}
+			}
+		}
+		return mLooper;
+	}
+
+	private boolean quitSafely() {
+		Looper looper = getLooper();
+		if (looper != null) {
+			try {
+				if (Build.VERSION.SDK_INT > 16) {
+					looper.quitSafely();
+				} else {
+					looper.quit();
+				}
+			} catch (Exception ex) {
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 接受数据的守护线程
+	 * 
+	 * @author Lin
+	 * 
+	 */
+	private class SocketReceiveThread extends Thread {
+		private InputStream mInputStream;
+		private Handler mHandler;
+
+		private Socket msocket;
+
+		public SocketReceiveThread(InputStream inputStream, Handler handler,
+				Socket socket) {
+			this.mInputStream = inputStream;
+			this.msocket = socket;
+			this.mHandler = handler;
+
+			setDaemon(true);
+		}
+
+		private void copybyte(byte[] source, byte[] target) {
+			for (int i = 0; i < target.length; i++) {
+				target[i] = source[i];
+			}
+		}
+
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			try {
+				do {
+					if (SOCKET_RECEIVE_SWITCH) {
+						byte[] mReceiveData = new byte[SocketThread.RECEIVE_SIZE];
+						int receiveSize = mInputStream.read(mReceiveData);
+						if (receiveSize > 0) {
+							byte[] mbyte = new byte[receiveSize];
+							copybyte(mReceiveData, mbyte);
+							Log.i(TAG, "read data from server success:"
+									+ DataUtils.byte2HexStr(mbyte));
+							Message msg = mHandler.obtainMessage();
+							msg.obj = mbyte;
+							msg.what = SocketThread.SOCKET_RECEIVE;
+							msg.sendToTarget();
+						}
+					} else {
+						break;
+					}
+				} while (msocket != null && !msocket.isClosed()
+						&& msocket.isConnected());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				if (mConnectListen != null) {
+					mConnectListen.OnConnectFaile(mSocket, e.getMessage());
+				}
+				Log.i(TAG, "read data from server failed:" + e.getMessage());
+				Message msg = mHandler.obtainMessage();
+				msg.what = SocketThread.SOCKET_DESTORY;
+				msg.sendToTarget();
+			}
+		}
+	}
+
+	public Socket getSocket() {
+		return mSocket;
+	}
+
+	public void setSocket(Socket socket) {
+		this.mSocket = socket;
+	}
+
+}

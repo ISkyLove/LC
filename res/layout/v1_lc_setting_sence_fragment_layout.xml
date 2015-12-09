@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <!-- 头部容器    添加时间 -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="170dp"
+        android:baselineAligned="false"
+        android:orientation="horizontal" >
+
+        <!-- 场景名 -->
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/v1_lc_setting_sence_name"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/v1_base_btn_black__selector"
+                android:drawableLeft="@drawable/v1_icon_sence"
+                android:drawablePadding="@dimen/v1_main_btn_paggin"
+                android:gravity="center"
+                android:paddingLeft="@dimen/bound_left_margin"
+                android:paddingRight="@dimen/bound_left_margin"
+                android:text="@string/sence"
+                android:textColor="@color/white"
+                android:textSize="@dimen/v1_item_text_size" />
+
+            <TextView
+                android:id="@+id/v1_lc_setting_sence_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/v1_base_btn_black__selector"
+                android:gravity="center"
+                android:text="@string/list"
+                android:textColor="@color/white"
+                android:textSize="@dimen/v1_item_text_size" />
+        </LinearLayout>
+        <!-- 场景容器 -->
+
+        <LinearLayout
+            android:id="@+id/v1_setting_sence_panner_scroll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:minHeight="150dp"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:id="@+id/v1_lc_setting_sence_pane"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/v1_setting_sence_panner_width"
+                android:orientation="horizontal" >
+
+                <FrameLayout
+                    android:id="@+id/v1_lc_setting_sence_pane_fl_1"
+                    android:layout_width="@dimen/v1_setting_sence_panner_width"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:background="@drawable/v1_base_btn_white__unpress" >
+
+                    <TextView
+                        android:id="@+id/v1_lc_setting_sence_pane_text1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="@string/one"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/v1_panner_text_size" />
+
+                    <com.lc.view.LCGridView
+                        android:id="@+id/v1_lc_setting_sence_pane_1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/v1_base_btn_white__unpress"
+                        android:cacheColorHint="#00000000"
+                        android:columnWidth="5dip"
+                        android:horizontalSpacing="10dp"
+                        android:numColumns="2"
+                        android:padding="10dp"
+                        android:verticalSpacing="10dp" />
+                </FrameLayout>
+
+                <ImageView
+                    android:id="@+id/v1_lc_setting_sence_pane_image_1"
+                    android:layout_width="@dimen/v1_setting_sence_panner_image_width"
+                    android:layout_height="@dimen/v1_setting_sence_panner_image_height"
+                    android:layout_gravity="center"
+                    android:background="@drawable/v1_setting_group_panner_add"
+                    android:contentDescription="@null" />
+
+                <FrameLayout
+                    android:id="@+id/v1_lc_setting_sence_pane_fl_2"
+                    android:layout_width="@dimen/v1_setting_sence_panner_width"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:background="@drawable/v1_base_btn_white__unpress" >
+
+                    <TextView
+                        android:id="@+id/v1_lc_setting_sence_pane_text2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="@string/two"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/v1_panner_text_size" />
+
+                    <com.lc.view.LCGridView
+                        android:id="@+id/v1_lc_setting_sence_pane_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/v1_base_btn_white__unpress"
+                        android:cacheColorHint="#00000000"
+                        android:columnWidth="5dip"
+                        android:horizontalSpacing="10dp"
+                        android:numColumns="2"
+                        android:padding="10dp"
+                        android:verticalSpacing="10dp" />
+                </FrameLayout>
+
+                <ImageView
+                    android:id="@+id/v1_lc_setting_sence_pane_image_2"
+                    android:layout_width="@dimen/v1_setting_sence_panner_image_width"
+                    android:layout_height="@dimen/v1_setting_sence_panner_image_height"
+                    android:layout_gravity="center"
+                    android:background="@drawable/v1_setting_group_panner_add"
+                    android:contentDescription="@null" />
+
+                <FrameLayout
+                    android:id="@+id/v1_lc_setting_sence_pane_fl_3"
+                    android:layout_width="@dimen/v1_setting_sence_panner_width"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:background="@drawable/v1_base_btn_white__unpress" >
+
+                    <TextView
+                        android:id="@+id/v1_lc_setting_sence_pane_text3"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="@string/three"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/v1_panner_text_size" />
+
+                    <com.lc.view.LCGridView
+                        android:id="@+id/v1_lc_setting_sence_pane_3"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/v1_base_btn_white__unpress"
+                        android:cacheColorHint="#00000000"
+                        android:columnWidth="5dip"
+                        android:horizontalSpacing="10dp"
+                        android:numColumns="2"
+                        android:padding="10dp"
+                        android:verticalSpacing="10dp" />
+                </FrameLayout>
+
+                <ImageView
+                    android:id="@+id/v1_lc_setting_sence_pane_image_3"
+                    android:layout_width="@dimen/v1_setting_sence_panner_image_width"
+                    android:layout_height="@dimen/v1_setting_sence_panner_image_height"
+                    android:layout_gravity="center"
+                    android:background="@drawable/v1_setting_group_panner_add"
+                    android:contentDescription="@null" />
+
+                <FrameLayout
+                    android:id="@+id/v1_lc_setting_sence_pane_fl_4"
+                    android:layout_width="@dimen/v1_setting_sence_panner_width"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:background="@drawable/v1_base_btn_white__unpress" >
+
+                    <TextView
+                        android:id="@+id/v1_lc_setting_sence_pane_text4"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="@string/four"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/v1_panner_text_size" />
+
+                    <com.lc.view.LCGridView
+                        android:id="@+id/v1_lc_setting_sence_pane_4"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/v1_base_btn_white__unpress"
+                        android:cacheColorHint="#00000000"
+                        android:columnWidth="5dip"
+                        android:horizontalSpacing="10dp"
+                        android:numColumns="2"
+                        android:padding="10dp"
+                        android:verticalSpacing="10dp" />
+                </FrameLayout>
+
+                <ImageView
+                    android:id="@+id/v1_lc_setting_sence_pane_image_4"
+                    android:layout_width="@dimen/v1_setting_sence_panner_image_width"
+                    android:layout_height="@dimen/v1_setting_sence_panner_image_height"
+                    android:layout_gravity="center"
+                    android:background="@drawable/v1_setting_group_panner_add"
+                    android:contentDescription="@null" />
+
+                <FrameLayout
+                    android:id="@+id/v1_lc_setting_sence_pane_fl_5"
+                    android:layout_width="@dimen/v1_setting_sence_panner_width"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:background="@drawable/v1_base_btn_white__unpress" >
+
+                    <TextView
+                        android:id="@+id/v1_lc_setting_sence_pane_text5"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="@string/five"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/v1_panner_text_size" />
+
+                    <com.lc.view.LCGridView
+                        android:id="@+id/v1_lc_setting_sence_pane_5"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/v1_base_btn_white__unpress"
+                        android:cacheColorHint="#00000000"
+                        android:columnWidth="5dip"
+                        android:horizontalSpacing="10dp"
+                        android:numColumns="2"
+                        android:padding="10dp"
+                        android:verticalSpacing="10dp" />
+                </FrameLayout>
+            </LinearLayout>
+
+            <HorizontalScrollView
+                android:id="@+id/v1_setting_sence_items_hsv"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:background="@drawable/v1_base_item_btn_unpress"
+                android:visibility="gone" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_margin="5dp"
+                    android:layout_height="fill_parent" >
+
+                    <com.lc.view.LCGridView
+                        android:id="@+id/v1_setting_sence_panner_children_gv"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:cacheColorHint="#00000000"
+                        android:horizontalSpacing="5dp"
+                        android:numColumns="1"
+                        android:verticalSpacing="0dp" />
+                </LinearLayout>
+            </HorizontalScrollView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/v1_lc_setting_sence_return"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/v1_base_btn_black__selector"
+                android:gravity="center"
+                android:text="循环"
+                android:textColor="@color/white"
+                android:padding="10dp"
+                android:textSize="@dimen/v1_item_text_size" />
+
+            <TextView
+                android:id="@+id/v1_lc_setting_sence_stop"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:padding="10dp"
+                android:background="@drawable/v1_base_btn_black__selector"
+                android:gravity="center"
+                android:text="@string/stop"
+                android:textColor="@color/white"
+                android:textSize="@dimen/v1_item_text_size" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 场景列表  取色器 -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:baselineAligned="false"
+        android:orientation="horizontal" >
+
+        <RelativeLayout
+            android:id="@+id/v1_lc_setting_sence_groups"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:layout_weight="2"
+            android:background="@drawable/v1_base_btn_white__unpress" />
+
+        <RelativeLayout
+            android:id="@+id/v1_lc_setting_sence_color_pick"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="LCTheme" parent="@style/AppTheme">
+        <item name="android:scrollbarThumbVertical">@drawable/lc_gridview_scrollbar</item>
+        <item name="android:scrollbarThumbHorizontal">@drawable/lc_gridview_scrollbar</item>
+        <item name="android:scrollbarTrackVertical">@drawable/v1_lc_transparent</item>
+        <item name="android:scrollbarTrackHorizontal">@drawable/v1_lc_transparent</item>
+        <item name="android:scrollbarSize">10dp</item>
+    </style>
+
+</resources>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:text="名称："
+            android:textSize="16dp" />
+
+        <EditText
+            android:id="@+id/v1_lc_setting_favor_edit_name"
+            android:layout_width="250dp"
+            android:layout_height="70dp"
+            android:textColor="@color/white"
+            android:maxLength="10"
+            android:textSize="16dp" />
+
+        <TextView
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:text="备注："
+            android:textSize="16dp" />
+
+        <EditText
+            android:id="@+id/v1_lc_setting_favor_edit_extern"
+            android:layout_width="250dp"
+            android:layout_height="70dp"
+            android:textColor="@color/white"
+            android:textSize="16dp" />
+    </LinearLayout>
+
+</LinearLayout>

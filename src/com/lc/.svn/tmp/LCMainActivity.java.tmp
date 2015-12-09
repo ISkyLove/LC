@@ -1,0 +1,333 @@
+package com.lc;
+
+import com.lc.common.LogUtils;
+import com.lc.group.GroupsFragment;
+import com.lc.sence.SencesFragment;
+import com.lc.setting.favor.FavorSettingFragment;
+import com.lc.setting.group.GroupSettingFragment;
+import com.lc.setting.sence.SenceSettingFragment;
+import com.lc.setting.show.ShowSettingFragment;
+import com.lc.show.ShowsFragment;
+
+import android.app.FragmentTransaction;
+import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.KeyEvent;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+/**
+ * 主界面，仅包含宏观操作，包括子页面切换、数据保存，具体操作在子页面中
+ * 
+ * @author LC work room
+ *
+ */
+public class LCMainActivity extends LCActivity implements OnClickListener{
+	
+	private TextView tvGroupViewing;   	//组控按钮
+	private TextView tvSencesViewing;	//场景按钮
+	private TextView tvSetting;			//设置按钮
+	private TextView tvShowsViewing;		//show按钮
+	private LinearLayout llSettingBtns;	//设置中所有按钮的layout，用于显示和隐藏
+	private TextView tvSettingGroup;		//设置--组设置按钮
+	private TextView tvSettingSence;		//设置--场景设置按钮
+	private TextView tvSettingShow;		//设置--show设置按钮
+	private TextView tvSettingFavor;		//设置--偏爱设置按钮
+	
+	//以下为各个子页面
+	private GroupsFragment groupsFragment;
+	private SencesFragment sencesFragment;
+	private ShowsFragment showsFragment;
+	private GroupSettingFragment groupSettingFragment;
+	private SenceSettingFragment senceSettingFragment;
+	private ShowSettingFragment showSettingFragment;
+	private FavorSettingFragment favorSettingFragment;
+	
+	private android.app.FragmentManager mFragmentManager;	//子页面管理
+	
+	private int curSettingFragmentTag = 3;		//当前设置子页面的标志变量，用于点击“设置”按钮时显示
+	//以下为子页面标志
+	private static final int GROUP_FRAGMENT_TAG = 0;			//组页面标志为0
+	private static final int SENCE_FRAGMENT_TAG = 1;			//场景页面标志为1
+	private static final int SHOW_FRAGMENT_TAG = 2;				//show页面标志为2
+	private static final int GROUP_SETTING_FRAGMENT_TAG = 3;	//设置--组页面标志为3
+	private static final int SENCE_SETTING_FRAGMENT_TAG = 4;	//设置--场景页面标志为4
+	private static final int SHOW_SETTING_FRAGMENT_TAG = 5;		//设置--show页面标志为5
+	private static final int FAVOR_SETTING_FRAGMENT_TAG = 6;	//设置--偏爱页面标志为6
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		//设置窗口样式
+	    setContentView(R.layout.v1_lc_main_activity_layout);
+	    //获取子页面管理实例
+	    mFragmentManager = getFragmentManager();
+	    initViews();
+	    showChildPage(GROUP_FRAGMENT_TAG);
+	}
+	
+	/**
+	 * 初始化页面，将左侧按钮实例化
+	 */
+	private void initViews(){
+		//外面的四个按钮
+		tvGroupViewing = (TextView) findViewById(R.id.group_viewing_btn);
+		tvSencesViewing = (TextView) findViewById(R.id.sences_viewing_btn);
+		tvSetting = (TextView) findViewById(R.id.setting_btn);
+		tvShowsViewing = (TextView) findViewById(R.id.shows_viewing_btn);
+		//设置中的按钮
+		llSettingBtns = (LinearLayout) findViewById(R.id.setting_child_ll);
+		tvSettingGroup = (TextView) findViewById(R.id.setting_group_btn);
+		tvSettingSence = (TextView) findViewById(R.id.setting_sence_btn);
+		tvSettingShow = (TextView) findViewById(R.id.setting_show_btn);
+		tvSettingFavor = (TextView) findViewById(R.id.setting_favor_btn);
+		//设置点击事件监听
+		tvSencesViewing.setOnClickListener(this);
+		tvSetting.setOnClickListener(this);
+		tvShowsViewing.setOnClickListener(this);
+		tvGroupViewing.setOnClickListener(this);
+		tvSettingGroup.setOnClickListener(this);
+		tvSettingSence.setOnClickListener(this);
+		tvSettingShow.setOnClickListener(this);
+		tvSettingFavor.setOnClickListener(this);
+	}
+
+	@Override
+	public void onClick(View v) {
+		int viewId = v.getId();
+		
+		switch (viewId) {
+		//组显示按钮
+		case R.id.group_viewing_btn:
+			resetBtnPerform();
+			tvGroupViewing.setBackgroundResource(R.drawable.normal_btn_press);
+			showChildPage(GROUP_FRAGMENT_TAG);
+			break;
+		//场景显示按钮
+		case R.id.sences_viewing_btn:
+			resetBtnPerform();
+			tvSencesViewing.setBackgroundResource(R.drawable.normal_btn_press);
+			showChildPage(SENCE_FRAGMENT_TAG);
+			break;
+		//设置按钮
+		case R.id.setting_btn:
+			resetBtnPerform();
+			tvSetting.setBackgroundResource(R.drawable.normal_btn_press);
+			llSettingBtns.setVisibility(View.VISIBLE);
+			showChildPage(curSettingFragmentTag);
+			break;
+		//show显示按钮
+		case R.id.shows_viewing_btn:
+			resetBtnPerform();
+			tvShowsViewing.setBackgroundResource(R.drawable.normal_btn_press);
+			showChildPage(SHOW_FRAGMENT_TAG);
+			break;
+		//设置--组设置按钮
+		case R.id.setting_group_btn:
+			resetChildBtnPerform();
+			tvSettingGroup.setBackgroundResource(R.drawable.normal_btn_press);
+			curSettingFragmentTag = GROUP_SETTING_FRAGMENT_TAG;
+			showChildPage(GROUP_SETTING_FRAGMENT_TAG);
+			break;
+		//设置--场景设置按钮
+		case R.id.setting_sence_btn:
+			resetChildBtnPerform();
+			tvSettingSence.setBackgroundResource(R.drawable.normal_btn_press);
+			curSettingFragmentTag = SENCE_SETTING_FRAGMENT_TAG;
+			showChildPage(SENCE_SETTING_FRAGMENT_TAG);
+			break;
+		//设置--show设置按钮
+		case R.id.setting_show_btn:
+			resetChildBtnPerform();
+			tvSettingShow.setBackgroundResource(R.drawable.normal_btn_press);
+			curSettingFragmentTag = SHOW_SETTING_FRAGMENT_TAG;
+			showChildPage(SHOW_SETTING_FRAGMENT_TAG);
+			break;
+		//设置--偏爱设置按钮
+		case R.id.setting_favor_btn:
+			resetChildBtnPerform();
+			tvSettingFavor.setBackgroundResource(R.drawable.normal_btn_press);
+			curSettingFragmentTag = FAVOR_SETTING_FRAGMENT_TAG;
+			showChildPage(FAVOR_SETTING_FRAGMENT_TAG);
+			break;
+
+		default:
+			break;
+		}
+		
+	}
+	
+	/**
+	 * 重置组、场景、show、设置按钮
+	 */
+	private void resetBtnPerform(){
+		tvGroupViewing.setBackgroundResource(R.drawable.normal_btn_unpress);
+		tvSencesViewing.setBackgroundResource(R.drawable.normal_btn_unpress);
+		tvShowsViewing.setBackgroundResource(R.drawable.normal_btn_unpress);
+		tvSetting.setBackgroundResource(R.drawable.normal_btn_unpress);
+		llSettingBtns.setVisibility(View.GONE);
+	}
+	
+	/**
+	 * 重置设置--组、设置--场景、设置--show、设置--偏爱按钮
+	 */
+	private void resetChildBtnPerform(){
+		tvSettingGroup.setBackgroundResource(R.drawable.normal_btn_unpress);
+		tvSettingSence.setBackgroundResource(R.drawable.normal_btn_unpress);
+		tvSettingShow.setBackgroundResource(R.drawable.normal_btn_unpress);
+		tvSettingFavor.setBackgroundResource(R.drawable.normal_btn_unpress);
+	}
+	
+	/**
+	 * 显示子页面，传入子页面标识显示对应的子页面
+	 * @param tag 标识子页面的tag值：GROUP_FRAGMENT_TAG = 0			组页面标志为0
+									SENCE_FRAGMENT_TAG = 1			场景页面标志为1
+									SHOW_FRAGMENT_TAG = 2			show页面标志为2
+									GROUP_SETTING_FRAGMENT_TAG = 3	设置--组页面标志为3
+									SENCE_SETTING_FRAGMENT_TAG = 4	设置--场景页面标志为4
+									SHOW_SETTING_FRAGMENT_TAG = 5	设置--show页面标志为5
+									FAVOR_SETTING_FRAGMENT_TAG = 6	设置--偏爱页面标志为6
+	 */
+	private void showChildPage(int tag){
+		if(mFragmentManager != null){
+			FragmentTransaction transaction = mFragmentManager.beginTransaction();
+			hideChildPage(transaction);
+			
+			switch (tag) {
+			case GROUP_FRAGMENT_TAG:
+				if(groupsFragment == null){
+					groupsFragment = new GroupsFragment();
+					transaction.add(R.id.fragment_container_fl, groupsFragment);
+				}else{
+					transaction.show(groupsFragment);
+				}
+				
+				break;
+			case SENCE_FRAGMENT_TAG:
+				if(sencesFragment == null){
+					sencesFragment = new SencesFragment();
+					transaction.add(R.id.fragment_container_fl, sencesFragment);
+				}else{
+					transaction.show(sencesFragment);
+				}
+				
+				break;
+			case SHOW_FRAGMENT_TAG:
+				if(showsFragment == null){
+					showsFragment = new ShowsFragment();
+					transaction.add(R.id.fragment_container_fl, showsFragment);
+				}else{
+					transaction.show(showsFragment);
+				}
+				
+				break;
+			case GROUP_SETTING_FRAGMENT_TAG:
+				if(groupSettingFragment == null){
+					groupSettingFragment = new GroupSettingFragment();
+					transaction.add(R.id.fragment_container_fl, groupSettingFragment);
+				}else{
+					transaction.show(groupSettingFragment);
+				}
+				
+				break;
+			case SENCE_SETTING_FRAGMENT_TAG:
+				if(senceSettingFragment == null){
+					senceSettingFragment = new SenceSettingFragment();
+					transaction.add(R.id.fragment_container_fl, senceSettingFragment);
+				}else{
+					transaction.show(senceSettingFragment);
+				}
+				
+				break;
+			case SHOW_SETTING_FRAGMENT_TAG:
+				if(showSettingFragment == null){
+					showSettingFragment = new ShowSettingFragment();
+					transaction.add(R.id.fragment_container_fl, showSettingFragment);
+				}else{
+					transaction.show(showSettingFragment);
+				}
+				
+				break;
+			case FAVOR_SETTING_FRAGMENT_TAG:
+				if(favorSettingFragment == null){
+					favorSettingFragment = new FavorSettingFragment();
+					transaction.add(R.id.fragment_container_fl, favorSettingFragment);
+				}else{
+					transaction.show(favorSettingFragment);
+				}
+				
+				break;
+
+			default:
+				Toast.makeText(this, "选择子页面无效，请重新选择", Toast.LENGTH_SHORT).show();
+				return;
+			}
+			
+			transaction.commit();
+		}else{
+			LogUtils.e(this.getClass(), "FragmentManager为空");
+			Toast.makeText(this, "初始化失败，请尝试重新启动", Toast.LENGTH_SHORT).show();
+		}
+	}
+	
+	/**
+	 * 重置子页面，将所有子页面隐藏
+	 * @param transaction	处理子页面切换业务的对象
+	 */
+	private void hideChildPage(FragmentTransaction transaction){
+		if(groupsFragment != null){
+			transaction.hide(groupsFragment);
+		}
+		
+		if(sencesFragment != null){
+			transaction.hide(sencesFragment);
+		}
+		
+		if(showsFragment != null){
+			transaction.hide(showsFragment);
+		}
+		
+		if(groupSettingFragment != null){
+			transaction.hide(groupSettingFragment);
+		}
+		
+		if(senceSettingFragment != null){
+			transaction.hide(senceSettingFragment);
+		}
+		
+		if(showSettingFragment != null){
+			transaction.hide(showSettingFragment);
+		}
+		
+		if(favorSettingFragment != null){
+			transaction.hide(favorSettingFragment);
+		}
+	}
+	
+	/**
+	 * 当应用退出时进行保存
+	 */
+	@Override
+	protected void onDestroy() {
+		saveChange();
+		super.onDestroy();
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO 物理键处理
+		return super.onKeyDown(keyCode, event);
+	}
+	
+	/**
+	 * 保存设置到本地，供下一次使用
+	 */
+	private void saveChange(){
+		LCShare.saveConfigInLocal(this);
+	}
+}

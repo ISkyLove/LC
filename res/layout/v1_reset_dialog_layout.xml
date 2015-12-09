@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/v1_layout_bk" >
+    
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:text="灯数："
+            android:textSize="16dp" />
+
+        <EditText
+            android:id="@+id/v1_reset_light_num_et"
+            android:layout_width="250dp"
+            android:layout_height="70dp"
+            android:textColor="@color/white"
+            android:maxLength="10"
+            android:inputType="number"
+            android:textSize="16dp" />
+        </LinearLayout>
+        
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:text="组数："
+            android:textSize="16dp" />
+
+        <EditText
+            android:id="@+id/v1_reset_group_num_et"
+            android:layout_width="250dp"
+            android:layout_height="70dp"
+            android:textColor="@color/white"
+            android:maxLength="10"
+            android:inputType="number"
+            android:textSize="16dp" />
+        </LinearLayout>
+        
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:text="场景数："
+            android:textSize="16dp" />
+
+        <EditText
+            android:id="@+id/v1_reset_sence_num_et"
+            android:layout_width="250dp"
+            android:layout_height="70dp"
+            android:textColor="@color/white"
+            android:maxLength="10"
+            android:inputType="number"
+            android:textSize="16dp" />
+        </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:text="show："
+            android:textSize="16dp" />
+
+        <EditText
+            android:id="@+id/v1_reset_show_num_et"
+            android:layout_width="250dp"
+            android:layout_height="70dp"
+            android:textColor="@color/white"
+            android:maxLength="10"
+            android:inputType="number"
+            android:textSize="16dp" />
+        </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,32 @@
+ <resources>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="bound_small_margin">5dp</dimen>
+    <dimen name="bound_left_margin">15dp</dimen>
+
+    <!-- 主界面 -->
+    <dimen name="v1_main_btn_size">210px</dimen>
+    <dimen name="v1_main_btn_paggin">10dp</dimen>
+    <dimen name="v1_main_img_size">50dp</dimen>
+    <dimen name="v1_main_text_size">20dp</dimen> 
+    <dimen name="v1_main_btn_lc_size">70dp</dimen>
+    <!--<dimen name="v1_main_btn_size">40dp</dimen>
+    <dimen name="v1_main_btn_paggin">3dp</dimen>
+    <dimen name="v1_main_img_size">17dp</dimen>
+    <dimen name="v1_main_text_size">7dp</dimen>
+    <dimen name="v1_main_btn_lc_size">24dp</dimen>-->
+    <dimen name="v1_main_text_margin_top">5dp</dimen>
+    <dimen name="v1_setting_sence_panner_width">180px</dimen>
+    <dimen name="v1_setting_sence_panner_heoght">180px</dimen>
+    <dimen name="v1_setting_sence_panner_image_width">50dp</dimen>
+    <dimen name="v1_setting_sence_panner_image_height">50dp</dimen>
+    
+    <dimen name="v1_panner_text_size">60px</dimen>
+    <dimen name="v1_item_text_size">25dp</dimen>
+    <dimen name="v1_tag_text_size">17dp</dimen>
+    <dimen name="v1_main_bottom_btn_img_size">40dp</dimen>
+    <dimen name="v1_main_bottom_btn_text_size">17dp</dimen>
+
+</resources>

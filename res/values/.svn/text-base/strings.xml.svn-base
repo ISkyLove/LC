@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">MONON</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    
+    <!-- 主页 -->
+    <string name="group">灯群</string>
+    <string name="sence">场景</string>
+    <string name="show">show</string>
+    <string name="exit">退出</string>
+    <string name="setting">设置</string>
+    <string name="setting_group">组群</string>
+    <string name="setting_sence">场景设置</string>
+    <string name="setting_show">定制show</string>
+    <string name="setting_favor">偏好</string>
+    <string name="link">手动连接</string>
+    <string name="exception">异常日志</string>
+    <string name="reset">重置</string>
+
+    <string name="list">列表</string>
+    <string name="one">1</string>
+    <string name="two">2</string>
+    <string name="three">3</string>
+    <string name="four">4</string>
+    <string name="five">5</string>
+    <string name="play">播放</string>
+    <string name="stop">停止</string>
+    
+</resources>

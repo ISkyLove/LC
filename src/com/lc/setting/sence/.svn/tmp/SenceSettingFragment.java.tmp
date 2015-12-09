@@ -1,0 +1,242 @@
+package com.lc.setting.sence;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import com.lc.LCConfig;
+import com.lc.LCFragment;
+import com.lc.R;
+import com.lc.common.IItemPostionVisitor;
+import com.lc.data.BaseItem.TYPE;
+import com.lc.data.GroupItem;
+import com.lc.data.SenceItem;
+import com.lc.dialog.SenceSelectorDialog;
+import com.lc.dialog.SetTimeDialog;
+import com.lc.dialog.SetTimeDialog.TimerGetterInterface;
+import com.lc.group.bean.GroupBean;
+import com.lc.sence.bean.SenceBean;
+import com.lc.view.LCAutoLayout;
+import com.lc.view.LCColorViewEx;
+import com.lc.view.LCGridView.TouchDownCallBackInterface;
+import com.lc.view.LCGridView.TouchMoveCallBackInterface;
+import com.lc.view.LCGridView.TouchUpCallBackInterface;
+import com.lc.view.LCGroupView;
+import com.lc.view.LCPaneView;
+import com.lc.view.LCColorViewEx.OnColorPickListen;
+import com.lc.view.adapter.GroupAdapter;
+import com.lc.view.adapter.SenceAdapter;
+
+import android.app.Fragment;
+import android.content.Context;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.Spinner;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.TextView;
+
+/**
+ * ³¡¾°±à¼­Ä£¿é
+ * 
+ * @author LC work room
+ * 
+ */
+public class SenceSettingFragment extends LCFragment implements
+		TouchDownCallBackInterface, TouchMoveCallBackInterface,
+		TouchUpCallBackInterface, IItemPostionVisitor {
+
+	private TextView tvName;
+	private TextView tvReturn;
+	private TextView tvStop;
+	private TextView tvList;
+	private LinearLayout llPane;
+	private RelativeLayout rlGroups;
+	private RelativeLayout rlColorPick;
+	private View rootView = null;
+	private Context mContext;
+	private LCPaneView mPaneView;
+	private LCGroupView mGroupView;
+	private LCColorViewEx mColorViewEx;
+	private LCAutoLayout mChildPane1;
+	private LCAutoLayout mChildPane2;
+	private LCAutoLayout mChildPane3;
+	private LCAutoLayout mChildPane4;
+	private LCAutoLayout mChildPane5;
+	
+	private GroupItem curGroupItem;
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+	}
+
+	@Override
+	public void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
+	}
+
+	@Override
+	public void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+	}
+
+	@Override
+	protected View bindView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		mContext = getActivity();
+		if (rootView == null) {
+			rootView = inflater.inflate(
+					R.layout.v1_lc_setting_sence_fragment_layout, null);
+		}
+		tvName = (TextView) rootView
+				.findViewById(R.id.v1_lc_setting_sence_name);
+		tvReturn = (TextView) rootView
+				.findViewById(R.id.v1_lc_setting_sence_return);
+		tvStop = (TextView) rootView
+				.findViewById(R.id.v1_lc_setting_sence_stop);
+		tvList = (TextView) rootView
+				.findViewById(R.id.v1_lc_setting_sence_list);
+		llPane = (LinearLayout) rootView
+				.findViewById(R.id.v1_lc_setting_sence_pane);
+		mChildPane1 = (LCAutoLayout) rootView
+				.findViewById(R.id.v1_lc_setting_sence_pane_1);
+		mChildPane2 = (LCAutoLayout) rootView
+				.findViewById(R.id.v1_lc_setting_sence_pane_2);
+		mChildPane3 = (LCAutoLayout) rootView
+				.findViewById(R.id.v1_lc_setting_sence_pane_3);
+		mChildPane4 = (LCAutoLayout) rootView
+				.findViewById(R.id.v1_lc_setting_sence_pane_4);
+		mChildPane5 = (LCAutoLayout) rootView
+				.findViewById(R.id.v1_lc_setting_sence_pane_5);
+		rlGroups = (RelativeLayout) rootView
+				.findViewById(R.id.v1_lc_setting_sence_groups);
+		rlColorPick = (RelativeLayout) rootView
+				.findViewById(R.id.v1_lc_setting_sence_color_pick);
+		mPaneView = new LCPaneView(mContext, -1);
+		mGroupView = new LCGroupView(mContext);
+<<<<<<< .mine
+		mColorViewEx = new LCColorViewEx(mContext);
+=======
+		mGroupView.setCanMoveChild(true);
+//		mColorViewEx = new LCColorViewEx(mContext);
+>>>>>>> .r23
+		rlGroups.addView(mGroupView.getRootView());
+		rlColorPick.addView(mColorViewEx.getRootView());
+		//²âÊÔÊý¾Ý
+//		List<SenceItem> list = new ArrayList<SenceItem>();
+//		for(int i = 0; i < 20; i++){
+//			SenceItem item = new SenceItem(mContext);
+//			list.add(item);
+//		} 
+//		     
+//	    SenceAdapter adapter = new SenceAdapter(mContext, list);
+//	    tvList.setAdapter(adapter);
+	        
+		initEvent();
+		return rootView;
+	}
+
+	private void initEvent() {
+		// TODO Auto-generated method stub
+
+		mColorViewEx.setOnColorPickListen(new OnColorPickListen() {
+
+			@Override
+			public void OnSeekBarUpdate(int progress) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void OnColorPickTouchUp(int color) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void OnColorPickTouchMove(int color) {
+				// TODO Auto-generated method stub
+				if (mGroupView.changeColor(color)) {
+
+				}
+			}
+
+			@Override
+			public void OnColorCardClick(int position, int color) {
+				// TODO Auto-generated method stub
+				mGroupView.changeColor(color);
+			}
+		});
+		
+		//²âÊÔ
+		tvName.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				SetTimeDialog setTimeDialog = new SetTimeDialog(mContext);
+				setTimeDialog.setTimerGetter(new TimerGetterInterface() {
+					
+					@Override
+					public void onGetTime(int time) {
+						// TODO Auto-generated method stub
+						tvName.setText(String.valueOf(time));
+					}
+				});
+				setTimeDialog.showDialog();
+			}
+		});
+
+		tvList.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				SenceSelectorDialog selectorDialog = new SenceSelectorDialog(mContext);
+				selectorDialog.setItemPostionVisitor(SenceSettingFragment.this);
+				selectorDialog.show();
+			}
+		});
+	}
+
+	@Override
+	public void upCallback(int x, int y, int position) {
+		// TODO Auto-generated method stub
+		if(curGroupItem != null){
+			
+		}
+		curGroupItem = null;
+	}
+
+	@Override
+	public void moveCallback(int x, int y, int position) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void downCallback(int x, int y, int position) {
+		// TODO Auto-generated method stub
+		if(position >= 0){
+			curGroupItem = mGroupView.getData().get(position);
+		}
+	}
+
+	@Override
+	public void visiteItemPos(int pos) {
+		// TODO Auto-generated method stub
+	}
+
+}

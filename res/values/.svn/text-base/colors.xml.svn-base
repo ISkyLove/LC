@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="yellow">#CC9909</color>
+    <color name="text_color">#FFFFFF</color>
+    <color name="divider_color">#11000000</color>
+    <color name="msg_color">#FFFFFFFF</color>
+    <color name="dialog_bg">#2a4175</color>
+    <color name="btn_press_color">#66000000</color>
+    <color name="btn_item_press_color">#77FFFFFF</color>
+    <color name="btn_unpress_color">#22000000</color>
+    <color name="normal_btn_press_color">#004175</color>
+    <color name="normal_btn_unpress_color">#2A4175</color>
+    <color name="v1_layout_bk">#2a4175</color>
+    <color name="v1_layout_cus_bk">#C0FF3E</color>
+    <drawable name="v1_layout_cus_bk_dr">#C0FF3E</drawable>
+
+    <drawable name="v1_base_item_default_color">#66000000</drawable>
+    <drawable name="v1_lc_transparent">#00000000</drawable>
+</resources>

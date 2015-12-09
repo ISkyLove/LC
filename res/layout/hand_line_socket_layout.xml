@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_bg"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="5dp" >
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:text="I  P: "
+            android:textColor="@color/text_color"
+            android:textSize="20dp" />
+
+        <EditText
+            android:id="@+id/hand_line_IP"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="@drawable/v1_base_btn_black__unpress"
+            android:hint="请输入IP"
+            android:padding="5dp"
+            android:textColor="@color/text_color" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="5dp" >
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:text="PORT: "
+            android:textColor="@color/text_color"
+            android:textSize="20dp" />
+
+        <EditText
+            android:id="@+id/hand_line_PORT"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="@drawable/v1_base_btn_black__unpress"
+            android:hint="请输入端口"
+            android:inputType="number"
+            android:padding="5dp"
+            android:textColor="@color/text_color" />
+    </LinearLayout>
+
+</LinearLayout>
